@@ -85,11 +85,22 @@ function draw() {
 
   let hoveredStation = null;
 
+  // 如果比對後沒有任何測站，顯示提示訊息
+  if (mergedData.length === 0 && !isLoading && errorMessage === "") {
+    textSize(24);
+    textAlign(CENTER, CENTER);
+    fill(255, 150, 150);
+    text("未能成功對應測站座標，請檢查 API 站名與對照表格式。", width / 2, 80);
+  }
+
   // 繪製所有的測站圓點
   for (let i = 0; i < mergedData.length; i++) {
     let st = mergedData[i];
     // 將經緯度轉換為畫布上的 XY 座標
     let pos = myMap.latLngToPixel(st.lat, st.lon);
+
+    // 確保座標轉換成功且在畫面上才進行繪製
+    if (!pos || pos.x === undefined || pos.y === undefined) continue;
 
     // 計算滑鼠與圓點的距離 (用以判斷是否懸停)
     let d = dist(mouseX, mouseY, pos.x, pos.y);
